@@ -3,9 +3,13 @@ import 'dotenv/config' // Lee las variables del archivo .env
 import express from 'express'
 import mongoose from 'mongoose'
 import Producto from './Producto.js' // El molde de las manillas
+import cors from 'cors' // junto a los otros imports
+
 
 const app = express()
 const PUERTO = process.env.PORT || 4000
+
+app.use(cors())
 
 // Permite que el servidor lea los datos JSON que le envían (req.body)
 app.use(express.json())
@@ -60,3 +64,4 @@ mongoose
   .catch((error) => {
     console.log('Error al conectar a MongoDB:', error.message)
   })
+  
