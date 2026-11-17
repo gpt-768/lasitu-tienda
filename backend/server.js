@@ -1,18 +1,24 @@
-// Importar Express, la librería que crea el servidor
+// Importar librerías
+import 'dotenv/config' // Lee las variables del archivo .env
 import express from 'express'
+import mongoose from 'mongoose'
 
-// Crear la aplicación: es el servidor en sí
 const app = express()
+const PUERTO = process.env.PORT || 4000
 
-// Puerto: el "número de puerta" por donde el servidor recibe visitas
-const PUERTO = 4000
-
-// Una ruta: cuando alguien visite "/", el servidor responde este texto
 app.get('/', (req, res) => {
   res.send('API de Lasitu funcionando')
 })
 
-// Encender el servidor y quedarse esperando peticiones
-app.listen(PUERTO, () => {
-  console.log(`Servidor en http://localhost:${PUERTO}`)
-})
+// Primero conectar a MongoDB; solo si funciona, encender el servidor
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Conectado a MongoDB')
+    app.listen(PUERTO, () => {
+      console.log(`Servidor en http://localhost:${PUERTO}`)
+    })
+  })
+  .catch((error) => {
+    console.log('Error al conectar a MongoDB:', error.message)
+  })
