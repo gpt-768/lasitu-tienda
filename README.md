@@ -3,8 +3,10 @@ Tienda online dedicada al diseño y venta de manillas exclusivas y accesorios pe
 
 ## Encender el backend
 
+```bash
 cd backend
 npm install
 npm run dev
+```
 
 Abrir http://localhost:4000
