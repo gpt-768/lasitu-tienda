@@ -9,6 +9,16 @@ npm install
 npm run dev
 ```
 
+## Encender el frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Abrir http://localhost:5173 (el backend debe estar encendido)
+
 Abrir http://localhost:4000
 
 ## API
@@ -19,3 +29,4 @@ Abrir http://localhost:4000
 | POST   | /api/productos     | Crea una manilla    |
 | PUT    | /api/productos/:id | Edita una manilla   |
 | DELETE | /api/productos/:id | Elimina una manilla |
+
