@@ -8,6 +8,7 @@ cd backend
 npm install
 npm run dev
 ```
+Abrir http://localhost:4000
 
 ## Encender el frontend
 
@@ -18,8 +19,6 @@ npm run dev
 ```
 
 Abrir http://localhost:5173 (el backend debe estar encendido)
-
-Abrir http://localhost:4000
 
 ## API
 
