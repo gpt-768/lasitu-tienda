@@ -1,0 +1,176 @@
+/* ===== Estilos de la página de Lasitu (diseño de cartel) =====
+   Blanco y negro con azul y rojo. La tipografía gigante es el diseño. */
+
+/* ===== Base ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --blanco: #fff;
+  --negro: #0f0f0f;
+  --azul: #1f3fbf;
+  --rojo: #d7263d;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--blanco);
+  color: var(--negro);
+  font-family: 'Archivo', system-ui, sans-serif;
+  line-height: 1.5;
+  padding: 0 clamp(14px, 3vw, 40px);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+}
+
+/* La letra gigante del cartel: Archivo expandida y pesada */
+h1,
+.marca,
+.titulo {
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+/* ===== Fotos y espacios reservados ===== */
+.foto {
+  object-fit: cover;
+}
+.foto-vacia {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 10px;
+  border: 3px dashed var(--negro);
+  /* Rayado diagonal, como un espacio marcado en obra */
+  background: repeating-linear-gradient(-45deg, transparent 0 10px, rgba(15, 15, 15, 0.06) 10px 20px);
+}
+
+/* ===== Cabecera ===== */
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  background: var(--blanco);
+  border-bottom: 4px solid var(--negro);
+}
+.marca {
+  font-size: 1.6rem;
+  text-decoration: none;
+}
+.menu {
+  display: flex;
+  gap: 18px;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.menu a {
+  text-decoration: none;
+}
+.menu a:hover {
+  color: var(--rojo);
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+}
+
+/* ===== Portada ===== */
+.portada {
+  padding: clamp(32px, 6vw, 72px) 0 48px;
+  border-bottom: 4px solid var(--negro);
+}
+.portada h1 {
+  display: grid;
+  line-height: 0.92;
+  font-size: clamp(3rem, 10.5vw, 9rem);
+}
+/* Una línea llena y otra solo con el contorno de la letra */
+.lleno {
+  color: var(--negro);
+}
+.contorno {
+  color: transparent;
+  -webkit-text-stroke: 3px var(--azul);
+}
+.bajada {
+  max-width: 52ch;
+  margin-top: 28px;
+  font-size: 1.05rem;
+}
+
+/* ===== Secciones ===== */
+.seccion {
+  padding: 40px 0 56px;
+  scroll-margin-top: 70px;
+}
+
+/* ===== Catálogo: lista de nombres gigantes ===== */
+.lista > li {
+  border-bottom: 4px solid var(--negro);
+}
+/* Cuadrícula de 3 columnas: miniatura | título | dato */
+.fila {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 14px 0;
+}
+/* Espacio para la imagen de referencia de cada manilla */
+.miniatura .foto {
+  width: 76px;
+  height: 76px;
+  display: grid;
+  border: 3px solid var(--negro);
+  font-size: 0;
+}
+.titulo {
+  font-size: clamp(1.9rem, 5.5vw, 4.2rem);
+  line-height: 1;
+}
+.fila small {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: right;
+}
+.aviso-vacio {
+  padding: 20px 0;
+}
+
+/* ===== Celulares ===== */
+@media (max-width: 760px) {
+  /* En celular el dato pasa a su propia línea, debajo del título */
+  .fila {
+    grid-template-columns: auto 1fr;
+  }
+  .fila small {
+    grid-column: 1 / -1;
+    text-align: left;
+  }
+}
