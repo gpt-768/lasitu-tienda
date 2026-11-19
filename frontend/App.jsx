@@ -12,6 +12,8 @@ function App() {
   const [categoria, setCategoria] = useState('Todas')
   const [busqueda, setBusqueda] = useState('')
   const [orden, setOrden] = useState('')
+  // La manilla que está abierta en el cuadro. null = ninguna.
+  const [abierta, setAbierta] = useState(null)
 
   // Pide las manillas al servidor una sola vez, al abrir la página
   useEffect(() => {
@@ -92,7 +94,8 @@ function App() {
         <ul className="lista">
           {visibles.map((p) => (
             <li key={p._id}>
-              <div className="fila">
+              {/* La fila ahora es un botón: al tocarla se abre el cuadro */}
+              <button className="fila" onClick={() => setAbierta(p)}>
                 <span className="miniatura">
                   <Foto src={p.imagen} alt={p.nombre} texto="" />
                 </span>
@@ -101,11 +104,38 @@ function App() {
                   {p.categoria} / {formatoPrecio(p.precio)}
                   {p.etiqueta ? ' / ' + p.etiqueta : ''}
                 </small>
-              </div>
+              </button>
             </li>
           ))}
         </ul>
       </section>
+
+      {/* ===== Cuadro de información: solo existe si hay una manilla abierta ===== */}
+      {abierta && (
+        <div className="fondo" onClick={() => setAbierta(null)}>
+          {/* stopPropagation evita que un clic dentro del cuadro lo cierre */}
+          <div className="cuadro" onClick={(e) => e.stopPropagation()}>
+            <button className="cerrar" onClick={() => setAbierta(null)}>
+              CERRAR
+            </button>
+
+            <Foto src={abierta.imagen} alt={abierta.nombre} texto="Foto de referencia" />
+
+            <p className="dato">
+              {abierta.categoria}
+              {abierta.etiqueta ? ' / ' + abierta.etiqueta : ''}
+            </p>
+            <h2 className="titulo">{abierta.nombre}</h2>
+            <p>{abierta.descripcion || 'Descripción próximamente.'}</p>
+            {abierta.colores && (
+              <p>
+                <strong>Colores:</strong> {abierta.colores}
+              </p>
+            )}
+            <p className="precio">{formatoPrecio(abierta.precio)}</p>
+          </div>
+        </div>
+      )}
     </>
   )
 }
