@@ -421,3 +421,100 @@ button.fila:focus-visible,
 .como strong {
   font-size: 1.2rem;
 }
+
+/* ===== Cabecera: botones a la derecha ===== */
+.acciones-cabecera {
+  margin-left: auto;
+  display: flex;
+  gap: 10px;
+}
+.acciones-cabecera .boton-pedido {
+  margin-left: 0;
+}
+
+/* ===== Barra del vendedor ===== */
+.barra-vendedor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  font-weight: 600;
+  border-bottom: 4px solid var(--rojo);
+}
+.barra-vendedor span {
+  margin-right: auto;
+}
+
+/* ===== Formularios ===== */
+.cuadro label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.cuadro input,
+.cuadro select,
+.cuadro textarea {
+  font: inherit;
+  font-weight: 400;
+  padding: 8px 10px;
+  color: var(--negro);
+  background: var(--blanco);
+  border: 3px solid var(--negro);
+}
+.cuadro textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+.cuadro input:focus,
+.cuadro select:focus,
+.cuadro textarea:focus {
+  outline: 3px solid var(--azul);
+  outline-offset: 2px;
+}
+.ayuda {
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.error {
+  font-weight: 700;
+  color: var(--rojo);
+}
+
+/* ===== Botones secundarios ===== */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.acciones .boton {
+  flex: 1 1 auto;
+}
+.boton-claro {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-align: center;
+  text-decoration: none;
+  padding: 10px 16px;
+  color: var(--negro);
+  background: var(--blanco);
+  border: 3px solid var(--negro);
+  cursor: pointer;
+}
+.boton-claro:hover {
+  color: var(--rojo);
+  border-color: var(--rojo);
+}
+/* Botón de eliminar: rojo para avisar que es una acción delicada */
+.boton-rojo {
+  color: var(--blanco);
+  background: var(--rojo);
+  border-color: var(--rojo);
+}
+.boton-rojo:hover {
+  color: var(--blanco);
+  background: var(--negro);
+  border-color: var(--negro);
+}
