@@ -8,7 +8,7 @@ export const NEGOCIO = {
     'Creamos manillas a mano con diferentes técnicas, tanto en macramé como en mostacillas.',
   // Número de WhatsApp con código de país, sin + ni espacios.
   // IMPORTANTE: cambien este número de ejemplo por el real.
-  whatsapp: '573000000000',
+  whatsapp: '573108889194',
   redes: [
     {
       nombre: 'Instagram',
