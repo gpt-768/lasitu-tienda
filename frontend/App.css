@@ -337,3 +337,87 @@ button.fila:focus-visible,
 .flotante:hover {
   background: var(--rojo);
 }
+
+/* ===== Botones principales ===== */
+.boton,
+.boton-pedido {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-align: center;
+  text-decoration: none;
+  padding: 12px 20px;
+  color: var(--blanco);
+  background: var(--azul);
+  border: 3px solid var(--negro);
+  cursor: pointer;
+}
+.boton:hover,
+.boton-pedido:hover {
+  background: var(--rojo);
+}
+/* El botón del pedido se va al extremo derecho de la cabecera */
+.boton-pedido {
+  margin-left: auto;
+  padding: 8px 16px;
+}
+
+/* ===== Lista del pedido ===== */
+.items {
+  display: grid;
+  gap: 10px;
+}
+.items li {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--negro);
+  font-weight: 600;
+}
+.cantidad {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cantidad button {
+  width: 30px;
+  height: 30px;
+  font: inherit;
+  font-weight: 800;
+  background: var(--blanco);
+  border: 3px solid var(--negro);
+  cursor: pointer;
+}
+.cantidad button:hover {
+  color: var(--rojo);
+  border-color: var(--rojo);
+}
+
+/* ===== Cómo pedir ===== */
+.como {
+  margin-bottom: 56px;
+  padding: 40px clamp(18px, 4vw, 48px);
+  color: var(--blanco);
+  background: var(--negro);
+}
+.como .titulo {
+  font-size: clamp(1.8rem, 5vw, 3rem);
+}
+.como ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+  margin-top: 28px;
+}
+.num {
+  display: block;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--rojo);
+}
+.como strong {
+  font-size: 1.2rem;
+}
