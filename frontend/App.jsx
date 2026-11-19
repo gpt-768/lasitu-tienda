@@ -4,6 +4,8 @@ import { FaWhatsapp } from 'react-icons/fa'
 import { NEGOCIO, formatoPrecio } from './datos.js'
 import Foto from './Foto.jsx'
 import Redes from './Redes.jsx'
+import Login from './Login.jsx'
+import FormularioProducto from './FormularioProducto.jsx'
 
 const API_URL = 'http://localhost:4000/api/productos'
 const CATEGORIAS = ['Todas', 'Macramé', 'Mostacillas']
@@ -20,13 +22,27 @@ function App() {
   // El pedido: una lista de { _id, nombre, precio, cantidad }
   const [carrito, setCarrito] = useState([])
   const [pedidoAbierto, setPedidoAbierto] = useState(false)
+  // La sesión: { token, usuario, rol } o null si nadie ha ingresado.
+  // Al abrir la página se lee lo que haya guardado en el navegador.
+  const [sesion, setSesion] = useState(() => {
+    const guardada = localStorage.getItem('sesion')
+    return guardada ? JSON.parse(guardada) : null
+  })
+  const [loginAbierto, setLoginAbierto] = useState(false)
+  // Formulario de manillas: null = cerrado, {} = nueva, una manilla = editar
+  const [formulario, setFormulario] = useState(null)
 
-  // Pide las manillas al servidor una sola vez, al abrir la página
-  useEffect(() => {
+  // Pide las manillas al servidor
+  function cargarProductos() {
     fetch(API_URL)
       .then((respuesta) => respuesta.json())
       .then((datos) => setProductos(datos))
       .catch(() => setError('No se pudo conectar con el servidor'))
+  }
+
+  // Al abrir la página se piden una sola vez
+  useEffect(() => {
+    cargarProductos()
   }, [])
 
   // ===== Filtros y orden =====
@@ -39,7 +55,6 @@ function App() {
   if (orden === 'mayor') visibles.sort((a, b) => b.precio - a.precio)
 
   // ===== Pedido =====
-  // Agrega una manilla. Si ya estaba, le suma 1 a la cantidad.
   function agregarAlPedido(p) {
     const existe = carrito.find((i) => i._id === p._id)
     if (existe) {
@@ -53,7 +68,6 @@ function App() {
     setAbierta(null)
   }
 
-  // Suma o resta 1 a la cantidad. Si llega a 0, la manilla sale del pedido.
   function cambiarCantidad(id, cambio) {
     setCarrito(
       carrito
@@ -62,11 +76,9 @@ function App() {
     )
   }
 
-  // Cuántas manillas hay en total y cuánto suman
   const cantidadTotal = carrito.reduce((suma, i) => suma + i.cantidad, 0)
   const total = carrito.reduce((suma, i) => suma + i.precio * i.cantidad, 0)
 
-  // Mensaje de WhatsApp con el pedido ya escrito
   const mensaje =
     'Hola Lasitu, quiero hacer este pedido:\n' +
     carrito
@@ -75,6 +87,87 @@ function App() {
     '\nTotal: ' +
     formatoPrecio(total)
   const enlaceWhatsApp = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(mensaje)}`
+
+  // ===== Sesión =====
+  // Guarda la sesión en el estado y también en el navegador (localStorage)
+  function iniciarSesion(datos) {
+    setSesion(datos)
+    localStorage.setItem('sesion', JSON.stringify(datos))
+    setLoginAbierto(false)
+    toast.success('Sesión iniciada')
+  }
+
+  function cerrarSesion() {
+    setSesion(null)
+    localStorage.removeItem('sesion')
+    setFormulario(null)
+  }
+
+  // ===== Administrar manillas (solo con sesión) =====
+  // Envía una petición al servidor incluyendo el token en la cabecera.
+  // Si el servidor dice 401, la sesión venció: se cierra y se avisa.
+  async function enviarConToken(url, metodo, datos) {
+    const respuesta = await fetch(url, {
+      method: metodo,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + sesion.token,
+      },
+      body: datos ? JSON.stringify(datos) : undefined,
+    })
+
+    if (respuesta.status === 401) {
+      cerrarSesion()
+      toast.error('Tu sesión venció. Ingresa de nuevo.')
+      return null
+    }
+    return respuesta
+  }
+
+  // Crea una manilla nueva o actualiza una existente
+  async function guardarProducto(datos) {
+    const editando = Boolean(formulario._id)
+    const url = editando ? `${API_URL}/${formulario._id}` : API_URL
+    const metodo = editando ? 'PUT' : 'POST'
+
+    try {
+      const respuesta = await enviarConToken(url, metodo, datos)
+      if (!respuesta) return
+
+      if (!respuesta.ok) {
+        toast.error('No se pudo guardar. Revisa los datos.')
+        return
+      }
+
+      toast.success(editando ? 'Manilla actualizada' : 'Manilla agregada')
+      setFormulario(null)
+      cargarProductos()
+    } catch {
+      toast.error('No se pudo conectar con el servidor')
+    }
+  }
+
+  async function eliminarProducto(p) {
+    if (!window.confirm('¿Eliminar "' + p.nombre + '"? Esta acción no se puede deshacer.')) {
+      return
+    }
+
+    try {
+      const respuesta = await enviarConToken(`${API_URL}/${p._id}`, 'DELETE')
+      if (!respuesta) return
+
+      if (!respuesta.ok) {
+        toast.error('No se pudo eliminar')
+        return
+      }
+
+      toast.success('Manilla eliminada')
+      setAbierta(null)
+      cargarProductos()
+    } catch {
+      toast.error('No se pudo conectar con el servidor')
+    }
+  }
 
   return (
     <>
@@ -90,10 +183,30 @@ function App() {
           <a href="#catalogo">Catálogo</a>
           <a href="#como-pedir">Cómo pedir</a>
         </nav>
-        <button className="boton-pedido" onClick={() => setPedidoAbierto(true)}>
-          Pedido ({cantidadTotal})
-        </button>
+        <div className="acciones-cabecera">
+          {!sesion && (
+            <button className="boton-pedido" onClick={() => setLoginAbierto(true)}>
+              Ingresar
+            </button>
+          )}
+          <button className="boton-pedido" onClick={() => setPedidoAbierto(true)}>
+            Pedido ({cantidadTotal})
+          </button>
+        </div>
       </header>
+
+      {/* ===== Barra del vendedor: solo existe si hay sesión ===== */}
+      {sesion && (
+        <div className="barra-vendedor">
+          <span>Modo vendedor: {sesion.usuario}</span>
+          <button className="boton-claro" onClick={() => setFormulario({})}>
+            AGREGAR MANILLA
+          </button>
+          <button className="boton-claro" onClick={cerrarSesion}>
+            SALIR
+          </button>
+        </div>
+      )}
 
       {/* ===== Portada: el eslogan como cartel ===== */}
       <section className="portada" id="inicio">
@@ -157,7 +270,7 @@ function App() {
         </ul>
       </section>
 
-      {/* ===== Cómo pedir: es una secuencia, por eso va numerada ===== */}
+      {/* ===== Cómo pedir ===== */}
       <section className="como" id="como-pedir">
         <h2 className="titulo">Cómo pedir</h2>
         <ol>
@@ -220,9 +333,32 @@ function App() {
             )}
             <p className="precio">{formatoPrecio(abierta.precio)}</p>
 
-            <button className="boton" onClick={() => agregarAlPedido(abierta)}>
-              AGREGAR AL PEDIDO
-            </button>
+            <div className="acciones">
+              <button className="boton" onClick={() => agregarAlPedido(abierta)}>
+                AGREGAR AL PEDIDO
+              </button>
+
+              {/* Editar y eliminar solo aparecen si hay sesión */}
+              {sesion && (
+                <>
+                  <button
+                    className="boton-claro"
+                    onClick={() => {
+                      setFormulario(abierta)
+                      setAbierta(null)
+                    }}
+                  >
+                    EDITAR
+                  </button>
+                  <button
+                    className="boton-claro boton-rojo"
+                    onClick={() => eliminarProducto(abierta)}
+                  >
+                    ELIMINAR
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -262,6 +398,20 @@ function App() {
             )}
           </div>
         </div>
+      )}
+
+      {/* ===== Login ===== */}
+      {loginAbierto && (
+        <Login onEntrar={iniciarSesion} onCerrar={() => setLoginAbierto(false)} />
+      )}
+
+      {/* ===== Formulario para agregar o editar una manilla ===== */}
+      {formulario && sesion && (
+        <FormularioProducto
+          producto={formulario}
+          onGuardar={guardarProducto}
+          onCerrar={() => setFormulario(null)}
+        />
       )}
     </>
   )
