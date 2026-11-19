@@ -214,9 +214,29 @@ function App() {
           <span className="lleno">INSPIRACIÓN</span>
           <span className="contorno">QUE MOTIVA</span>
         </h1>
-        <p className="bajada">{NEGOCIO.descripcion}</p>
-        <Redes />
+
+        {/* Debajo del título: texto y redes a un lado, foto decorativa al otro */}
+        <div className="portada-fila">
+          <div>
+            <p className="bajada">{NEGOCIO.descripcion}</p>
+            <Redes />
+          </div>
+          <div className="portada-foto">
+            <Foto
+              src={NEGOCIO.decorativas[0]}
+              alt="Manillas hechas a mano de Lasitu"
+              texto="Foto decorativa"
+            />
+          </div>
+        </div>
       </section>
+
+      {/* ===== Banda con el eslogan. Es decoración, por eso se oculta a lectores de pantalla ===== */}
+      <div className="banda" aria-hidden="true">
+        <span>{NEGOCIO.eslogan}</span>
+        <span>{NEGOCIO.eslogan}</span>
+        <span>{NEGOCIO.eslogan}</span>
+      </div>
 
       {/* ===== Catálogo ===== */}
       <section className="seccion" id="catalogo">
@@ -268,6 +288,13 @@ function App() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* ===== Tira de tres fotos decorativas ===== */}
+      <section className="tira">
+        {NEGOCIO.decorativas.slice(1).map((src, n) => (
+          <Foto key={n} src={src} alt="Manillas hechas a mano de Lasitu" texto="Foto decorativa" />
+        ))}
       </section>
 
       {/* ===== Cómo pedir ===== */}

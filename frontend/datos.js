@@ -7,7 +7,7 @@ export const NEGOCIO = {
   descripcion:
     'Creamos manillas a mano con diferentes técnicas, tanto en macramé como en mostacillas.',
   // Número de WhatsApp con código de país, sin + ni espacios.
-  // IMPORTANTE: cambien este número de ejemplo por el real.
+  // Ejemplo: '573001234567'. Cambien este por el número real.
   whatsapp: '573108889194',
   redes: [
     {
@@ -25,6 +25,15 @@ export const NEGOCIO = {
       enlace: 'https://www.pinterest.com/Lasitucompany',
       icono: FaPinterestP,
     },
+  ],
+  // Imágenes decorativas. Mientras estén vacías se muestra un espacio reservado.
+  // Para poner una foto: guárdenla en frontend/public/decorativas/
+  // y escriban su ruta, por ejemplo '/decorativas/portada.jpg'.
+  decorativas: [
+    '', // 0: junto a la portada
+    '', // 1: tira de fotos, izquierda
+    '', // 2: tira de fotos, centro
+    '', // 3: tira de fotos, derecha
   ],
 }
 
