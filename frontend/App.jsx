@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
+import { FaWhatsapp } from 'react-icons/fa'
 import { NEGOCIO, formatoPrecio } from './datos.js'
 import Foto from './Foto.jsx'
+import Redes from './Redes.jsx'
 
 const API_URL = 'http://localhost:4000/api/productos'
 const CATEGORIAS = ['Todas', 'Macramé', 'Mostacillas']
@@ -54,6 +56,7 @@ function App() {
           <span className="contorno">QUE MOTIVA</span>
         </h1>
         <p className="bajada">{NEGOCIO.descripcion}</p>
+        <Redes />
       </section>
 
       {/* ===== Catálogo ===== */}
@@ -94,7 +97,7 @@ function App() {
         <ul className="lista">
           {visibles.map((p) => (
             <li key={p._id}>
-              {/* La fila ahora es un botón: al tocarla se abre el cuadro */}
+              {/* La fila es un botón: al tocarla se abre el cuadro */}
               <button className="fila" onClick={() => setAbierta(p)}>
                 <span className="miniatura">
                   <Foto src={p.imagen} alt={p.nombre} texto="" />
@@ -109,6 +112,24 @@ function App() {
           ))}
         </ul>
       </section>
+
+      {/* ===== Pie de página ===== */}
+      <footer className="pie">
+        <span className="marca">LASITU</span>
+        <Redes />
+        <small>{new Date().getFullYear()} Lasitu. Hecho a mano.</small>
+      </footer>
+
+      {/* ===== Botón flotante de WhatsApp ===== */}
+      <a
+        className="flotante"
+        href={'https://wa.me/' + NEGOCIO.whatsapp}
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Escribir por WhatsApp"
+      >
+        <FaWhatsapp size={30} />
+      </a>
 
       {/* ===== Cuadro de información: solo existe si hay una manilla abierta ===== */}
       {abierta && (

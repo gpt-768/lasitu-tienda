@@ -285,3 +285,55 @@ button.fila:focus-visible,
 .cerrar:hover {
   background: var(--rojo);
 }
+
+/* ===== Redes sociales ===== */
+.redes {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.redes a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  text-decoration: none;
+  border: 3px solid var(--negro);
+}
+.redes a:hover {
+  color: var(--rojo);
+  border-color: var(--rojo);
+}
+
+/* ===== Pie de página ===== */
+.pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 0 40px;
+  border-top: 4px solid var(--negro);
+}
+.pie .redes {
+  margin-top: 0;
+}
+
+/* ===== Botón flotante de WhatsApp ===== */
+.flotante {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  color: var(--blanco);
+  background: var(--azul);
+  border: 3px solid var(--negro);
+  border-radius: 50%;
+}
+.flotante:hover {
+  background: var(--rojo);
+}
