@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import toast, { Toaster } from 'react-hot-toast'
 import { FaWhatsapp } from 'react-icons/fa'
 import { NEGOCIO, formatoPrecio } from './datos.js'
 import Foto from './Foto.jsx'
@@ -16,6 +17,9 @@ function App() {
   const [orden, setOrden] = useState('')
   // La manilla que está abierta en el cuadro. null = ninguna.
   const [abierta, setAbierta] = useState(null)
+  // El pedido: una lista de { _id, nombre, precio, cantidad }
+  const [carrito, setCarrito] = useState([])
+  const [pedidoAbierto, setPedidoAbierto] = useState(false)
 
   // Pide las manillas al servidor una sola vez, al abrir la página
   useEffect(() => {
@@ -25,20 +29,58 @@ function App() {
       .catch(() => setError('No se pudo conectar con el servidor'))
   }, [])
 
-  // Lista que se muestra: se calcula cada vez que cambia un estado.
-  // Primero filtra por categoría y por texto de búsqueda.
+  // ===== Filtros y orden =====
   let visibles = productos.filter(
     (p) =>
       (categoria === 'Todas' || p.categoria === categoria) &&
       p.nombre.toLowerCase().includes(busqueda.toLowerCase())
   )
-
-  // Después ordena por precio, si la persona eligió un orden
   if (orden === 'menor') visibles.sort((a, b) => a.precio - b.precio)
   if (orden === 'mayor') visibles.sort((a, b) => b.precio - a.precio)
 
+  // ===== Pedido =====
+  // Agrega una manilla. Si ya estaba, le suma 1 a la cantidad.
+  function agregarAlPedido(p) {
+    const existe = carrito.find((i) => i._id === p._id)
+    if (existe) {
+      setCarrito(
+        carrito.map((i) => (i._id === p._id ? { ...i, cantidad: i.cantidad + 1 } : i))
+      )
+    } else {
+      setCarrito([...carrito, { _id: p._id, nombre: p.nombre, precio: p.precio, cantidad: 1 }])
+    }
+    toast.success(p.nombre + ' agregada al pedido')
+    setAbierta(null)
+  }
+
+  // Suma o resta 1 a la cantidad. Si llega a 0, la manilla sale del pedido.
+  function cambiarCantidad(id, cambio) {
+    setCarrito(
+      carrito
+        .map((i) => (i._id === id ? { ...i, cantidad: i.cantidad + cambio } : i))
+        .filter((i) => i.cantidad > 0)
+    )
+  }
+
+  // Cuántas manillas hay en total y cuánto suman
+  const cantidadTotal = carrito.reduce((suma, i) => suma + i.cantidad, 0)
+  const total = carrito.reduce((suma, i) => suma + i.precio * i.cantidad, 0)
+
+  // Mensaje de WhatsApp con el pedido ya escrito
+  const mensaje =
+    'Hola Lasitu, quiero hacer este pedido:\n' +
+    carrito
+      .map((i) => `- ${i.cantidad} x ${i.nombre} (${formatoPrecio(i.precio * i.cantidad)})`)
+      .join('\n') +
+    '\nTotal: ' +
+    formatoPrecio(total)
+  const enlaceWhatsApp = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(mensaje)}`
+
   return (
     <>
+      {/* Contenedor de los avisos pequeños */}
+      <Toaster position="bottom-center" />
+
       {/* ===== Cabecera ===== */}
       <header className="cabecera">
         <a className="marca" href="#inicio">
@@ -46,7 +88,11 @@ function App() {
         </a>
         <nav className="menu">
           <a href="#catalogo">Catálogo</a>
+          <a href="#como-pedir">Cómo pedir</a>
         </nav>
+        <button className="boton-pedido" onClick={() => setPedidoAbierto(true)}>
+          Pedido ({cantidadTotal})
+        </button>
       </header>
 
       {/* ===== Portada: el eslogan como cartel ===== */}
@@ -61,7 +107,6 @@ function App() {
 
       {/* ===== Catálogo ===== */}
       <section className="seccion" id="catalogo">
-        {/* Filtros, buscador y orden */}
         <div className="controles">
           <div className="filtros">
             {CATEGORIAS.map((c) => (
@@ -97,7 +142,6 @@ function App() {
         <ul className="lista">
           {visibles.map((p) => (
             <li key={p._id}>
-              {/* La fila es un botón: al tocarla se abre el cuadro */}
               <button className="fila" onClick={() => setAbierta(p)}>
                 <span className="miniatura">
                   <Foto src={p.imagen} alt={p.nombre} texto="" />
@@ -111,6 +155,28 @@ function App() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* ===== Cómo pedir: es una secuencia, por eso va numerada ===== */}
+      <section className="como" id="como-pedir">
+        <h2 className="titulo">Cómo pedir</h2>
+        <ol>
+          <li>
+            <span className="num">1</span>
+            <strong>Elige</strong>
+            <p>Toca una manilla del catálogo y agrégala al pedido.</p>
+          </li>
+          <li>
+            <span className="num">2</span>
+            <strong>Revisa</strong>
+            <p>Abre tu pedido, ajusta las cantidades y mira el total.</p>
+          </li>
+          <li>
+            <span className="num">3</span>
+            <strong>Envía</strong>
+            <p>Te llevamos a WhatsApp con el pedido ya escrito. Solo falta enviarlo.</p>
+          </li>
+        </ol>
       </section>
 
       {/* ===== Pie de página ===== */}
@@ -131,10 +197,9 @@ function App() {
         <FaWhatsapp size={30} />
       </a>
 
-      {/* ===== Cuadro de información: solo existe si hay una manilla abierta ===== */}
+      {/* ===== Cuadro de información de una manilla ===== */}
       {abierta && (
         <div className="fondo" onClick={() => setAbierta(null)}>
-          {/* stopPropagation evita que un clic dentro del cuadro lo cierre */}
           <div className="cuadro" onClick={(e) => e.stopPropagation()}>
             <button className="cerrar" onClick={() => setAbierta(null)}>
               CERRAR
@@ -154,6 +219,47 @@ function App() {
               </p>
             )}
             <p className="precio">{formatoPrecio(abierta.precio)}</p>
+
+            <button className="boton" onClick={() => agregarAlPedido(abierta)}>
+              AGREGAR AL PEDIDO
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== Cuadro del pedido ===== */}
+      {pedidoAbierto && (
+        <div className="fondo" onClick={() => setPedidoAbierto(false)}>
+          <div className="cuadro" onClick={(e) => e.stopPropagation()}>
+            <button className="cerrar" onClick={() => setPedidoAbierto(false)}>
+              CERRAR
+            </button>
+            <h2 className="titulo">Tu pedido</h2>
+
+            {carrito.length === 0 ? (
+              <p>Todavía no has agregado manillas. Toca una del catálogo para empezar.</p>
+            ) : (
+              <>
+                <ul className="items">
+                  {carrito.map((i) => (
+                    <li key={i._id}>
+                      <span>{i.nombre}</span>
+                      <span className="cantidad">
+                        <button onClick={() => cambiarCantidad(i._id, -1)}>-</button>
+                        {i.cantidad}
+                        <button onClick={() => cambiarCantidad(i._id, 1)}>+</button>
+                      </span>
+                      <span>{formatoPrecio(i.precio * i.cantidad)}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="precio">Total: {formatoPrecio(total)}</p>
+                <a className="boton" href={enlaceWhatsApp} target="_blank" rel="noreferrer">
+                  ENVIAR PEDIDO POR WHATSAPP
+                </a>
+              </>
+            )}
           </div>
         </div>
       )}
