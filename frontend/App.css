@@ -518,3 +518,90 @@ button.fila:focus-visible,
   background: var(--negro);
   border-color: var(--negro);
 }
+
+/* ===== Portada: texto y foto debajo del título ===== */
+.portada-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: end;
+  margin-top: 28px;
+}
+.portada-fila .bajada {
+  margin-top: 0;
+}
+.portada-foto .foto {
+  width: 100%;
+  height: 240px;
+}
+
+/* ===== Banda azul con el eslogan ===== */
+.banda {
+  display: flex;
+  gap: 32px;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 14px 0;
+  color: var(--blanco);
+  background: var(--azul);
+  border-bottom: 4px solid var(--negro);
+  font-stretch: 125%;
+  font-weight: 800;
+  font-size: clamp(1.1rem, 3vw, 1.9rem);
+  text-transform: uppercase;
+}
+.banda span::after {
+  content: ' /';
+  margin-left: 32px;
+}
+
+/* ===== Tira de fotos decorativas ===== */
+.tira {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  padding-bottom: 56px;
+}
+.tira .foto {
+  width: 100%;
+  height: 260px;
+}
+
+/* ===== Teclado: se ve dónde está el foco ===== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--rojo);
+  outline-offset: 2px;
+}
+
+/* ===== Para quien prefiere menos movimiento ===== */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ===== Celulares ===== */
+@media (max-width: 760px) {
+  .portada-fila {
+    grid-template-columns: 1fr;
+  }
+  .controles input {
+    min-width: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .marca {
+    font-size: 1.3rem;
+  }
+  .miniatura .foto {
+    width: 60px;
+    height: 60px;
+  }
+  .tira .foto {
+    height: 200px;
+  }
+}
