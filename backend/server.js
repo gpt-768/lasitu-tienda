@@ -1,67 +1,106 @@
-// Importar librerías
-import 'dotenv/config' // Lee las variables del archivo .env
+import 'dotenv/config'
 import express from 'express'
 import mongoose from 'mongoose'
-import Producto from './Producto.js' // El molde de las manillas
-import cors from 'cors' // junto a los otros imports
-
+import cors from 'cors'
+import bcrypt from 'bcryptjs'
+import Producto from './Producto.js'
+import Usuario from './Usuario.js'
+import { crearToken, soloVendedores } from './auth.js'
 
 const app = express()
-const PUERTO = process.env.PORT || 4000
 
+// Permite que el frontend (puerto 5173) hable con este servidor (puerto 4000)
 app.use(cors())
-
-// Permite que el servidor lea los datos JSON que le envían (req.body)
+// Permite leer los datos JSON que llegan en req.body
 app.use(express.json())
 
+// Ruta de prueba
 app.get('/', (req, res) => {
   res.send('API de Lasitu funcionando')
 })
 
-// GET: listar todas las manillas
+// ===== Login =====
+// Recibe usuario y clave. Si son correctos, entrega un token.
+app.post('/api/login', async (req, res) => {
+  const { usuario, clave } = req.body
+
+  if (!usuario || !clave) {
+    return res.status(400).json({ mensaje: 'Escribe usuario y contraseña' })
+  }
+
+  try {
+    const encontrado = await Usuario.findOne({ usuario })
+
+    // El mismo mensaje para "no existe" y "clave mala":
+    // así no se le dice a un extraño cuáles usuarios existen.
+    if (!encontrado) {
+      return res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' })
+    }
+
+    // compare encripta lo escrito y lo compara con lo guardado
+    const coincide = await bcrypt.compare(clave, encontrado.clave)
+    if (!coincide) {
+      return res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos' })
+    }
+
+    res.json({
+      token: crearToken(encontrado),
+      usuario: encontrado.usuario,
+      rol: encontrado.rol,
+    })
+  } catch {
+    res.status(500).json({ mensaje: 'Error del servidor' })
+  }
+})
+
+// ===== Productos =====
+// Ver las manillas es público: cualquiera puede ver el catálogo
 app.get('/api/productos', async (req, res) => {
   const productos = await Producto.find()
   res.json(productos)
 })
 
-// POST: crear una manilla nueva
-app.post('/api/productos', async (req, res) => {
+// Crear, editar y borrar: protegido con soloVendedores
+app.post('/api/productos', soloVendedores, async (req, res) => {
   try {
     const nuevo = await Producto.create(req.body)
     res.status(201).json(nuevo)
-  } catch (error) {
+  } catch {
     res.status(400).json({ mensaje: 'Datos inválidos' })
   }
 })
 
-// PUT: editar una manilla por su id
-app.put('/api/productos/:id', async (req, res) => {
-  const editado = await Producto.findByIdAndUpdate(req.params.id, req.body, { new: true })
-  if (!editado) {
-    return res.status(404).json({ mensaje: 'Manilla no encontrada' })
+app.put('/api/productos/:id', soloVendedores, async (req, res) => {
+  try {
+    const actualizado = await Producto.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
+    if (!actualizado) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' })
+    }
+    res.json(actualizado)
+  } catch {
+    res.status(400).json({ mensaje: 'Datos inválidos' })
   }
-  res.json(editado)
 })
 
-// DELETE: eliminar una manilla por su id
-app.delete('/api/productos/:id', async (req, res) => {
-  const eliminado = await Producto.findByIdAndDelete(req.params.id)
-  if (!eliminado) {
-    return res.status(404).json({ mensaje: 'Manilla no encontrada' })
+app.delete('/api/productos/:id', soloVendedores, async (req, res) => {
+  try {
+    const borrado = await Producto.findByIdAndDelete(req.params.id)
+    if (!borrado) {
+      return res.status(404).json({ mensaje: 'Producto no encontrado' })
+    }
+    res.json({ mensaje: 'Producto eliminado' })
+  } catch {
+    res.status(400).json({ mensaje: 'Id inválido' })
   }
-  res.json({ mensaje: 'Manilla eliminada' })
 })
 
-// Primero conectar a MongoDB; solo si funciona, encender el servidor
+// Conecta con MongoDB y, solo si funciona, enciende el servidor
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('Conectado a MongoDB')
-    app.listen(PUERTO, () => {
-      console.log(`Servidor en http://localhost:${PUERTO}`)
-    })
+    const puerto = process.env.PORT || 4000
+    app.listen(puerto, () => console.log('Servidor en http://localhost:' + puerto))
   })
-  .catch((error) => {
-    console.log('Error al conectar a MongoDB:', error.message)
-  })
-  
+  .catch((error) => console.log('No se pudo conectar con MongoDB:', error.message))
