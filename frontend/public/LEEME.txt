@@ -1,0 +1,23 @@
+COMO PONER LAS FOTOS DE LA PAGINA
+
+Todo lo que se guarde en esta carpeta (public) se puede usar en la pagina
+escribiendo una ruta que empieza por /
+
+FOTOS DECORATIVAS (portada y tira de tres fotos)
+1. Creen la carpeta public/decorativas y guarden ahi las fotos.
+2. Abran frontend/datos.js y busquen la lista "decorativas".
+3. Escriban la ruta de cada foto, por ejemplo:
+   '/decorativas/portada.jpg'
+   La primera va junto a la portada; las otras tres, en la tira de fotos.
+
+FOTOS DE LAS MANILLAS
+1. Creen la carpeta public/manillas y guarden ahi las fotos.
+2. Inicien sesion en la pagina, abran una manilla, toquen EDITAR.
+3. En el campo "Imagen" escriban la ruta, por ejemplo:
+   /manillas/nudo-marinero.jpg
+
+CONSEJOS
+- Usen formato JPG o WebP.
+- Mantengan cada foto por debajo de 300 KB para que la pagina cargue rapido.
+- Escriban los nombres de archivo sin espacios ni tildes.
+- Si una foto no aparece, revisen que la ruta coincida con el nombre del archivo.
