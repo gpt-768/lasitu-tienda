@@ -30,7 +30,7 @@ export const NEGOCIO = {
   // Para poner una foto: guárdenla en frontend/public/decorativas/
   // y escriban su ruta, por ejemplo '/decorativas/portada.jpg'.
   decorativas: [
-    '', // 0: junto a la portada
+    '/decorativas/logo-lasitu.png', // 0: junto a la portada
     '', // 1: tira de fotos, izquierda
     '', // 2: tira de fotos, centro
     '', // 3: tira de fotos, derecha
