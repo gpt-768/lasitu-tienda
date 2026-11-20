@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const API_LOGIN = 'http://localhost:4000/api/login'
+const API_LOGIN = (import.meta.env.VITE_API_URL || 'http://localhost:4000') + '/api/login'
 
 // Formulario de inicio de sesión.
 // onEntrar y onCerrar son props: funciones que le pasa App.jsx.

@@ -7,7 +7,7 @@ import Redes from './Redes.jsx'
 import Login from './Login.jsx'
 import FormularioProducto from './FormularioProducto.jsx'
 
-const API_URL = 'http://localhost:4000/api/productos'
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:4000') + '/api/productos'
 const CATEGORIAS = ['Todas', 'Macramé', 'Mostacillas']
 
 function App() {
