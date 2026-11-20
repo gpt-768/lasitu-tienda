@@ -4,7 +4,7 @@ import 'dotenv/config'
 import mongoose from 'mongoose'
 import Producto from './Producto.js'
 
-// Manillas de EJEMPLO. Cambien nombres, precios y fotos por los reales.
+// Manillas
 // imagen: '' deja un espacio reservado hasta que pongan la foto.
 const manillas = [
   { nombre: 'Nudo Marinero', colores: 'Azul y blanco', etiqueta: 'Más vendida', precio: 15000, categoria: 'Macramé', descripcion: 'Hilo encerado azul con nudo plano y cierre ajustable.', imagen: '' },
