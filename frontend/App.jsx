@@ -36,7 +36,10 @@ function App() {
   function cargarProductos() {
     fetch(API_URL)
       .then((respuesta) => respuesta.json())
-      .then((datos) => setProductos(datos))
+      .then((datos) => {
+        setProductos(datos)
+        setError('')
+      })
       .catch(() => setError('No se pudo conectar con el servidor'))
   }
 
