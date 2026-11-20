@@ -9,10 +9,11 @@
 }
 
 :root {
-  --blanco: #fff;
-  --negro: #0f0f0f;
-  --azul: #1f3fbf;
-  --rojo: #d7263d;
+  --blanco: #EEE7D3;
+  --negro: #060B1F;
+  --azul: #C9A15B;
+  --rojo: #C8664A;
+  --turquesa: #2E9C9B;
 }
 
 html {
@@ -22,7 +23,7 @@ html {
 body {
   background: var(--blanco);
   color: var(--negro);
-  font-family: 'Archivo', system-ui, sans-serif;
+  font-family: 'Jost', sans-serif;
   line-height: 1.5;
   padding: 0 clamp(14px, 3vw, 40px);
 }
@@ -44,8 +45,8 @@ a {
 h1,
 .marca,
 .titulo {
-  font-stretch: 125%;
-  font-weight: 800;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
   letter-spacing: -0.02em;
   text-transform: uppercase;
 }
@@ -329,13 +330,14 @@ button.fila:focus-visible,
   place-items: center;
   width: 60px;
   height: 60px;
-  color: var(--blanco);
+  color: var(--negro);
   background: var(--azul);
   border: 3px solid var(--negro);
   border-radius: 50%;
 }
 .flotante:hover {
-  background: var(--rojo);
+  background: var(--negro);
+  color: var(--azul);
 }
 
 /* ===== Botones principales ===== */
@@ -347,14 +349,15 @@ button.fila:focus-visible,
   text-align: center;
   text-decoration: none;
   padding: 12px 20px;
-  color: var(--blanco);
+  color: var(--negro);
   background: var(--azul);
   border: 3px solid var(--negro);
   cursor: pointer;
 }
 .boton:hover,
 .boton-pedido:hover {
-  background: var(--rojo);
+  background: var(--negro);
+  color: var(--azul);
 }
 /* El botón del pedido se va al extremo derecho de la cabecera */
 .boton-pedido {
@@ -504,7 +507,8 @@ button.fila:focus-visible,
   cursor: pointer;
 }
 .boton-claro:hover {
-  color: var(--rojo);
+  background: var(--negro);
+  color: var(--blanco);
   border-color: var(--rojo);
 }
 /* Botón de eliminar: rojo para avisar que es una acción delicada */
@@ -524,15 +528,21 @@ button.fila:focus-visible,
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 28px;
-  align-items: end;
+  align-items: center;
   margin-top: 28px;
 }
+
 .portada-fila .bajada {
   margin-top: 0;
 }
+
 .portada-foto .foto {
-  width: 100%;
-  height: 240px;
+  width: min(20%, 420px);
+  margin-left: auto;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border: 4px solid var(--negro);
+  background: #050a1a;
 }
 
 /* ===== Banda azul con el eslogan ===== */
