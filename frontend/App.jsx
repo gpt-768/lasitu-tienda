@@ -13,6 +13,7 @@ const CATEGORIAS = ['Todas', 'Macramé', 'Mostacillas']
 function App() {
   // Estados: la "memoria" del componente
   const [productos, setProductos] = useState([])
+  const [cargando, setCargando] = useState(true)
   const [error, setError] = useState('')
   const [categoria, setCategoria] = useState('Todas')
   const [busqueda, setBusqueda] = useState('')
@@ -41,6 +42,7 @@ function App() {
         setError('')
       })
       .catch(() => setError('No se pudo conectar con el servidor'))
+      .finally(() => setCargando(false))
   }
 
   // Al abrir la página se piden una sola vez
@@ -269,7 +271,12 @@ function App() {
             <option value="mayor">Precio: mayor a menor</option>
           </select>
         </div>
-
+        
+        {cargando && (
+          <p className="aviso-vacio">
+            Cargando las manillas... la primera vez puede tardar hasta un minuto.
+          </p>
+        )}      
         {error && <p className="aviso-vacio">{error}</p>}
         {!error && productos.length > 0 && visibles.length === 0 && (
           <p className="aviso-vacio">No hay manillas con esos filtros.</p>
