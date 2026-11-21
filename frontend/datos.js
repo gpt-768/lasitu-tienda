@@ -17,7 +17,7 @@ export const NEGOCIO = {
     },
     {
       nombre: 'Facebook',
-      enlace: 'https://www.facebook.com/Lasitucompany2',
+      enlace: 'https://www.facebook.com/people/Lasitu-Company/61596776671516/',
       icono: FaFacebookF,
     },
     {
