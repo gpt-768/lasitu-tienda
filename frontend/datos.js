@@ -1,4 +1,4 @@
-import { FaInstagram, FaFacebookF, FaPinterestP } from 'react-icons/fa'
+import { FaInstagram, FaFacebookF } from 'react-icons/fa'
 
 // Datos del emprendimiento. Si algo cambia, se edita solo aquí.
 export const NEGOCIO = {
@@ -20,11 +20,7 @@ export const NEGOCIO = {
       enlace: 'https://www.facebook.com/people/Lasitu-Company/61596776671516/',
       icono: FaFacebookF,
     },
-    {
-      nombre: 'Pinterest',
-      enlace: 'https://www.pinterest.com/Lasitucompany',
-      icono: FaPinterestP,
-    },
+
   ],
   // Imágenes decorativas. Mientras estén vacías se muestra un espacio reservado.
   // Para poner una foto: guárdenla en frontend/public/decorativas/
